@@ -8,7 +8,7 @@ public class Browser {
 	public Browser(String browser) {
 		switch(browser) {
 		case "Chrome":
-			System.setProperty("webdriver.chrome.driver", "./dependencies/chromedriver.exe");
+			System.setProperty("webdriver.chrome.driver", "./dependencies/chromedriver/chromedriver.exe");
 			driver = new ChromeDriver();
 			break;
 		case "Edge":

@@ -1,30 +1,27 @@
 
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.Test;
 
 public class SimpleTest2 extends ReusableMethods {
 	
-	@Test
+	@Test(testName="Test2Pass")
 	public void FirstTest() {
-        // declaration and instantiation of objects/variables
-		Browser b = new Browser("Chrome");
-		driver = b.getDriver();
-		
-		//comment the above 2 lines and uncomment below 2 lines to use Chrome
-		//System.setProperty("webdriver.chrome.driver","G:\\chromedriver.exe");
-		//WebDriver driver = new ChromeDriver();
-    	
-        String baseUrl = prop.getProperty("url");
-        String expectedTitle = "Most"; // Powerful Cross Browser Testing Tool Online | LambdaTest";
+        
+        String expectedTitle = "Dashboard"; // Powerful Cross Browser Testing Tool Online | LambdaTest";
         String actualTitle = "";
- 
+        
         // launch Chrome and direct it to the Base URL
-        driver.get(baseUrl);
+        launchBrowser();
  
         // get the actual value of the title
         actualTitle = driver.getTitle();
- 
+//		wait(5);
+
+//        waitForPageLoaded();
+        
+        takeScreenshot(driver, actualTitle);
         /*
          * compare the actual title of the page with the expected one and print
          * the result as "Passed" or "Failed"
@@ -36,7 +33,7 @@ public class SimpleTest2 extends ReusableMethods {
 //            assertFail("Failed to get actual title:" +actualTitle+" | " +expectedTitle);
 //        }
        
-        org.testng.Assert.assertEquals(actualTitle, expectedTitle);
+        fa.assertEquals(actualTitle, expectedTitle);
         //close Fire fox
        
     }
