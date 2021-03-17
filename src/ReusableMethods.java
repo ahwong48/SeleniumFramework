@@ -1,5 +1,6 @@
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
@@ -21,8 +22,11 @@ public class ReusableMethods {
 	WebDriver driver;
 	FrameworkAssert fa;
 	final String home = prop.getProperty("url");
+	String tcName;
+	String tcModule;
+	String tcStatus;
+	ArrayList<TestStepStatus> testStepsList = new ArrayList<TestStepStatus>();
 
-	
 	@BeforeTest
 	public void setBrowserDriver() {
 		Browser b = new Browser(prop.getProperty("browser"));
@@ -41,12 +45,11 @@ public class ReusableMethods {
 	
 	public String getElementText(By by) {
 		WebElement e = driver.findElement(by);
-		scrollToElement(e);
-		return e.getAttribute("innerText");
+		return getElementText(e);
 	}
 	
 	public String getElementText(WebElement e) {
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", e);
+		scrollToElement(e);
 		return e.getAttribute("innerText");
 	}
 	
@@ -54,6 +57,46 @@ public class ReusableMethods {
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", e);
 	}
 	
+	public void inputText(By by, String s) {
+		WebElement e = driver.findElement(by);
+		inputText(e, s);
+	}
+	
+	public void inputText(WebElement e, String s) {
+		scrollToElement(e);
+		clickElement(e);
+		e.sendKeys(s);
+	}
+	
+	public void clickElement(By by) {
+		WebElement e = driver.findElement(by);
+		clickElement(e);
+	}
+	
+	public void clickElement(WebElement e) {
+		e.click();
+	}
+	
+	public By dynXpath(By by, String replaceString) {
+		String xpath = by.toString();
+		xpath = xpath.substring(10);
+		xpath = xpath.replace("@1@", replaceString);
+		System.out.println(xpath);
+		return By.xpath(xpath);
+	}
+	
+	public By dynXpath(By by, String[] replaceStrings) {
+		String xpath = by.toString();
+		xpath = xpath.substring(10);
+		for(int i = 0; i < replaceStrings.length; i++) {
+			String replace = "@"+(i+1)+"@";
+			xpath = xpath.replace(replace, replaceStrings[i]);
+		}
+		System.out.println(xpath);
+		return By.xpath(xpath);
+	}
+	
+	public void logStep(String testStep, )
 	
 	// assert to be used when validating a mandatory step is required
 	// verify to be used when validating a step that will not stop workflow
@@ -93,7 +136,7 @@ public class ReusableMethods {
 	}
 	
 	public String timestamp() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyymmdd-HH.mm.ss");    
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMDD-HH.mm.ss");    
 		Date date = new Date();
 		return sdf.format(date);
 	}

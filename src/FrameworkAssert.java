@@ -48,7 +48,7 @@ public class FrameworkAssert extends Assertion{
 	}
 	
 	public String timestamp() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyymmdd-HH.mm.ss");    
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMDD-HH.mm.ss");    
 		Date date = new Date();
 		return sdf.format(date);
 	}
