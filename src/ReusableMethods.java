@@ -18,10 +18,11 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
 public class ReusableMethods {
-	PropertyLoader prop = new PropertyLoader();
+	PropertyLoader config = new PropertyLoader("./config.properties");
+	PropertyLoader securityConfig = new PropertyLoader("./security.properties");
 	WebDriver driver;
 	FrameworkAssert fa;
-	final String home = prop.getProperty("url");
+	final String home = config.getProperty("url");
 	String tcName;
 	String tcModule;
 	String tcStatus;
@@ -29,13 +30,13 @@ public class ReusableMethods {
 
 	@BeforeTest
 	public void setBrowserDriver() {
-		Browser b = new Browser(prop.getProperty("browser"));
+		Browser b = new Browser(config.getProperty("browser"));
 		driver = b.getDriver();
 		fa = new FrameworkAssert(driver);
 	}
 	
 	public void launchBrowser() {
-		launchBrowser(prop.getProperty("home"));
+		launchBrowser(config.getProperty("home"));
 	}
 	
 	public void launchBrowser(String url) {
@@ -96,7 +97,9 @@ public class ReusableMethods {
 		return By.xpath(xpath);
 	}
 	
-	public void logStep(String testStep, )
+	public void logStep(String testStep, String status) {
+		testStepsList.add(new TestStepStatus(testStep, status));
+	}
 	
 	// assert to be used when validating a mandatory step is required
 	// verify to be used when validating a step that will not stop workflow
@@ -109,7 +112,7 @@ public class ReusableMethods {
 	}
 	
 	public void assertFailError(String reason, Exception e) {
-		if(prop.getProperty("kofr").equals("true")) {
+		if(config.getProperty("kofr").equals("true")) {
 			driver.close();
 		}
 		org.testng.Assert.fail(reason, e);

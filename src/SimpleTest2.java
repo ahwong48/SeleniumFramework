@@ -35,15 +35,15 @@ public class SimpleTest2 extends ReusableMethods {
 //        }
        
        fa.assertEquals(actualTitle, expectedTitle);
-       inputText(Locators.loginUserName, prop.getProperty("login"));
-       inputText(Locators.loginPassword, prop.getProperty("pw"));
+       inputText(Locators.loginUserName, securityConfig.getProperty("login"));
+       inputText(Locators.loginPassword, securityConfig.getProperty("pw"));
        clickElement(Locators.loginButton);
        //close Fire fox
        try{Thread.sleep(5000);}catch(Exception e) {}
-       String[] replace = {prop.getProperty("login"),"white-bold user"};
+       String[] replace = {config.getProperty("login"),"white-bold user"};
        String compare = getElementText(dynXpath(Locators.loginConfirmDyn, replace));
 //       fa.assertEquals(compare, prop.getProperty("login")+"\s");
-       fa.assertTrue(compare.contains(prop.getProperty("login")));
+       fa.assertTrue(compare.contains(config.getProperty("login")));
        
     }
 }
