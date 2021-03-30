@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.annotations.*;
+import org.testng.asserts.SoftAssert;
 
 import jdk.jfr.Timespan;
 
@@ -27,7 +28,6 @@ public class ReusableMethods {
 	PropertyLoader config = new PropertyLoader("./config.properties");
 	PropertyLoader securityConfig = new PropertyLoader("./security.properties");
 	WebDriver driver;
-	FrameworkAssert fa;
 	final String home = config.getProperty("url");
 	String tcName;
 	String tcClass;
@@ -76,7 +76,6 @@ public class ReusableMethods {
 	public void setBrowserDriver() {
 		DriverFactory b = new DriverFactory(config.getProperty("browser"));
 		driver = b.getDriver();
-		fa = new FrameworkAssert(driver);
 	}
 	
 	@BeforeTest
@@ -217,7 +216,7 @@ public class ReusableMethods {
 		} else if(tss.getStepStatus().equals("Failed")) {
 			if(config.getProperty("killOnFirstRun").equals("true")) {
 				Assert.fail(tss.getTestStep());
-			}
+			} 
 		}
 	}
 	
@@ -323,7 +322,7 @@ public class ReusableMethods {
 		}
 		try {
 			FileUtils.writeStringToFile(newHtmlFile, htmlRowEntry, "UTF-8", true);
-		} catch (Exception e) { e.printStackTrace(); }
+		} catch (Exception e) { e.printStackTrace(); }	
 	}
 	
 	@AfterSuite

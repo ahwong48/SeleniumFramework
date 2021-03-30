@@ -27,7 +27,8 @@ public class SimpleTest extends ReusableMethods {
         logStep("testStep1b", "Debug", takeScreenshot("testStep1b-Debug"));
         logStep("testStep1c", "Passed");
         /*
-         * compare the actual title of the page with the expected one and print
+         * compare the actual title of the page with the expected one amd
+         * ccnd print
          * the result as "Passed" or "Failed"
          */
 //        fa.assertEquals(actualTitle, expectedTitle);
