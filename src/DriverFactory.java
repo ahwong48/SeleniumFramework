@@ -3,9 +3,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-public class Browser {
+public class DriverFactory {
+	
+	private final String operatingSystem = System.getProperty("os.name").toUpperCase();
+	private final String systemArchitecture = System.getProperty("os.arch").toUpperCase();
 	private WebDriver driver;
-	public Browser(String browser) {
+	
+	public DriverFactory(String browser) {
+		System.out.println("Current Operating System: "+operatingSystem);
+		System.out.println("Current System Architecture: "+systemArchitecture);
 		switch(browser) {
 		case "Chrome":
 			System.setProperty("webdriver.chrome.driver", "./dependencies/chromedriver/chromedriver.exe");
@@ -24,9 +30,17 @@ public class Browser {
 			driver = null;
 			break;
 		}
+		System.out.println("Current Browser: "+ browser.toUpperCase());
 	}
 	
 	public WebDriver getDriver() {
 		return driver;
+	}
+	
+	public void quitDriver() {
+		if (null != driver) {
+			driver.quit();
+			driver=null;
+		}
 	}
 }

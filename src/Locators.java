@@ -1,9 +1,9 @@
 import org.openqa.selenium.By;
 
 public class Locators {
-	public static final By locator1 = By.xpath("//legend");
-	public static final By loginUserName=By.xpath("//input[@ng-model='auth.credential.username']");
-	public static final By loginPassword=By.xpath("//input[@ng-model='auth.credential.password']");
-	public static final By loginButton=By.xpath("//button[@ng-click='auth.login()']");
-	public static final By loginConfirmDyn=By.xpath("//div[@class='@2@' and contains(text(),'@1@')]");
+	public static final By googleSearchBar = By.xpath("//input[@aria-label='Search']");
+	public static final By googleSearchButton = By.xpath("//div[not(@jsname)]/center/input[@aria-label='Google Search' and @type='submit']");
+	public static final By googleSignInButton = By.xpath("//a[text()='Sign in']");
+	public static final By googleEmailInput = By.xpath("//input[@id='identifierId']");
+	public static final By googleNextbutton = By.xpath("//span[text()='Next']/following-sibling::div");
 }

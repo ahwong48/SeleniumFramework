@@ -10,7 +10,7 @@ public class SimpleTest2 extends ReusableMethods {
 	@Test(testName="Test2Pass")
 	public void InputTestAndAssertions() {
         
-        String expectedTitle = "Dashboard"; // Powerful Cross Browser Testing Tool Online | LambdaTest";
+        String expectedTitle = "Google"; // Powerful Cross Browser Testing Tool Online | LambdaTest";
         String actualTitle = "";
         
         // launch Chrome and direct it to the Base URL
@@ -22,7 +22,7 @@ public class SimpleTest2 extends ReusableMethods {
 
 //        waitForPageLoaded();
         
-        takeScreenshot(driver, actualTitle);
+        takeScreenshot(actualTitle);
         /*
          * compare the actual title of the page with the expected one and print
          * the result as "Passed" or "Failed"
@@ -33,17 +33,19 @@ public class SimpleTest2 extends ReusableMethods {
 //            System.out.println("Test Failed");
 //            assertFail("Failed to get actual title:" +actualTitle+" | " +expectedTitle);
 //        }
-       
-       fa.assertEquals(actualTitle, expectedTitle);
-       inputText(Locators.loginUserName, securityConfig.getProperty("login"));
-       inputText(Locators.loginPassword, securityConfig.getProperty("pw"));
-       clickElement(Locators.loginButton);
+//       logStep("testStep2", "Failed");
+       verifyText(actualTitle, expectedTitle, "Page Title");
+       clickElement(Locators.googleSignInButton, "Sign In Button");
+       inputText(Locators.googleEmailInput, securityConfig.getProperty("login"), "Login Text Box");
+       clickElement(Locators.googleNextbutton, "Next button");
+//       inputText(Locators.loginPassword, securityConfig.getProperty("pw"));
+//       clickElement(Locators.loginButton);
        //close Fire fox
-       try{Thread.sleep(5000);}catch(Exception e) {}
-       String[] replace = {config.getProperty("login"),"white-bold user"};
-       String compare = getElementText(dynXpath(Locators.loginConfirmDyn, replace));
+//       try{Thread.sleep(5000);}catch(Exception e) {}
+//       String[] replace = {config.getProperty("login"),"white-bold user"};
+//       String compare = getElementText(dynXpath(Locators.loginConfirmDyn, replace));
 //       fa.assertEquals(compare, prop.getProperty("login")+"\s");
-       fa.assertTrue(compare.contains(config.getProperty("login")));
+//       fa.assertTrue(compare.contains(config.getProperty("login")));
        
     }
 }
