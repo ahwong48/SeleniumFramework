@@ -32,7 +32,7 @@ public class TestStepStatus {
 		if(ssPath.equals("")) {
 			html = "<p style=\"color:@1@;\"><b>@2@</b></p>";
 		} else {
-			html = "<p><a style=\"color:@1@;\" href=\"@3@\"><b>@2@</b></a></p>";
+			html = "<p><a style=\"color:@1@;\" href=\"@3@\" target=\"_blank\"><b>@2@</b></a></p>";
 		}
 		if(status.equals("Passed")) {
 			html = html.replace("@1@", "DarkGreen");

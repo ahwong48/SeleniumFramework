@@ -1,6 +1,11 @@
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -8,7 +13,9 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -27,6 +34,7 @@ public class ReusableMethods {
 	File screenShotFolder = new File("./SS");
 	PropertyLoader config = new PropertyLoader("./config.properties");
 	PropertyLoader securityConfig = new PropertyLoader("./security.properties");
+	PropertyLoader regEx = new PropertyLoader("./src/References/regEx.properties");
 	WebDriver driver;
 	final String home = config.getProperty("url");
 	String tcName;
@@ -45,11 +53,12 @@ public class ReusableMethods {
 	static File newRerunListFile;
 
 	@BeforeSuite
-	public void beforeSuite() {
+	public void beforeSuite(ITestContext context) {
 		passedCount = 0;
 		failedCount = 0;
 		debugCount = 0;
 		try {
+			context.getSuite().getXmlSuite().setThreadCount(Integer.parseInt(config.getProperty("thread-count")));
 			File htmlTemplateFile = new File("./htmlReportTemplate.html");
 			File rerunTemplateFile = new File("./rerunTemplate.xml");
 			htmlString = FileUtils.readFileToString(htmlTemplateFile, "UTF-8");
@@ -164,9 +173,8 @@ public class ReusableMethods {
 		if(debug()) {
 			logStep("Click Element Locator: ["+by+"]", "Debug");
 		}
-		if(e != null) {
+		if(e.isDisplayed()) {
 			clickElement(e, elementName);
-			logStep("Clicked Element: ["+elementName+"]", "Passed");
 		} else {
 			logStep("Unable to find Element ["+elementName+"] to Click: ["+by.toString()+"]", "Failed");
 		}
@@ -174,6 +182,100 @@ public class ReusableMethods {
 	
 	public void clickElement(WebElement e, String elementName) {
 		e.click();
+		logStep("Clicked Element: ["+elementName+"]", "Passed");
+	}
+	
+	public void selectElement(String selectType, By by, String selectValue, String elementName) {
+		WebElement e = findElement(by);
+		if(debug()) {
+			logStep("Select Element Locator: ["+by+"]", "Debug");
+		}
+		if(e != null) {
+			switch(selectType) {
+				case "index":
+					selectElementIndex(e, selectValue, elementName);
+					break;
+				case "text":
+				default:
+					selectElementText(e, selectValue, elementName);
+					break;
+			}
+		} else {
+			logStep("Unable to find Element ["+elementName+"] or Select Value/Index ["+selectValue+"] not found/out of bounds: ["+by.toString()+"]", "Failed");
+		}
+	}
+	
+	public void selectElementText(WebElement e, String selectValue, String elementName) {
+		Select select = new Select(e);
+		select.selectByVisibleText(selectValue);
+		logStep("Select Element: ["+elementName+"] | Element Selected ["+selectValue+"]", "Passed");
+	}
+	
+	public void selectElementIndex(WebElement e, String index, String elementName) {
+		Select select = new Select(e);
+		int idx = Integer.parseInt(index);
+		select.selectByIndex(idx);
+		logStep("Select Element: ["+elementName+"] | Index Selected ["+index+"]", "Passed");
+	}
+	
+	public void dragAndDrop(By start, By end, String startElementName, String endElementName) {
+		WebElement s = findElement(start);
+		WebElement e = findElement(end);
+		
+		if(s.isDisplayed() && e.isDisplayed()) {
+			dragAndDrop(s, e, startElementName, endElementName);
+		} else {
+			logStep("Unable to find Elements [start:"+startElementName+" | end:"+endElementName+"]", "Failed");
+		}
+	}
+	
+	public void dragAndDrop(WebElement start, WebElement end, String startElementName, String endElementName) {
+		if(debug()) {
+			logStep("Is Start Element Available:"+ start.isDisplayed(), "Debug");
+			logStep("Is End Element Available:"+ end.isDisplayed(), "Debug");
+		}
+		logStepSS("Drag and Drop: Before Drag and Drop", "Passed", "PreDnD");
+		Actions act = new Actions(driver);
+		act.dragAndDrop(start, end).build().perform();
+//		String xto=Integer.toString(end.getLocation().x);
+//	    String yto=Integer.toString(end.getLocation().y);
+//	    ((JavascriptExecutor)driver).executeScript("function simulate(f,c,d,e){var b,a=null;for(b in eventMatchers)if(eventMatchers[b].test(c)){a=b;break}if(!a)return!1;document.createEvent?(b=document.createEvent(a),a==\"HTMLEvents\"?b.initEvent(c,!0,!0):b.initMouseEvent(c,!0,!0,document.defaultView,0,d,e,d,e,!1,!1,!1,!1,0,null),f.dispatchEvent(b)):(a=document.createEventObject(),a.detail=0,a.screenX=d,a.screenY=e,a.clientX=d,a.clientY=e,a.ctrlKey=!1,a.altKey=!1,a.shiftKey=!1,a.metaKey=!1,a.button=1,f.fireEvent(\"on\"+c,a));return!0} var eventMatchers={HTMLEvents:/^(?:load|unload|abort|error|select|change|submit|reset|focus|blur|resize|scroll)$/,MouseEvents:/^(?:click|dblclick|mouse(?:down|up|over|move|out))$/}; " +
+//	    "simulate(arguments[0],\"mousedown\",0,0); simulate(arguments[0],\"mousemove\",arguments[1],arguments[2]); simulate(arguments[0],\"mouseup\",arguments[1],arguments[2]); ",
+//	    start,xto,yto);
+		logStepSS("Drag and Drop Element: [start:"+startElementName+"|end:"+endElementName+"]", "Passed", "PostDnD");
+	}
+	
+	public void dragAndDropCss(String cssLocStart, String cssLocEnd, String startElementName, String endElementName) {
+		try {
+			if(debug()) {
+				logStep("Css Start Selector ["+cssLocStart+"] | Css End Selector ["+cssLocEnd+"]", "Debug");
+			}
+			File file = new File("./dependencies/js/dragAndDrop.js");
+			FileInputStream fis = new FileInputStream(file);
+			byte[] data = new byte[(int) file.length()];
+			fis.read(data);
+			fis.close();
+			String dndjs = new String(data, "UTF-8");
+			//----------------------------
+			logStepSS("Drag and Drop: Before Drag and Drop", "Passed", "PreDnD");
+			//----------------------------
+			((JavascriptExecutor) driver).executeScript(dndjs+"$('"+cssLocStart+"').simulateDragDrop({ dropTarget: '"+cssLocEnd+"'});");
+			//----------------------------
+			logStepSS("Drag and Drop Element: [start:"+startElementName+"|end:"+endElementName+"]", "Passed", "PostDnD");
+		} catch (Exception e) {
+			logStep("Drag and Drop CSS failed ["+e.getMessage()+"]", "Failed");
+		}
+		
+	}
+	
+	public void switchIFrame(int i) {
+		driver.switchTo().frame(i);
+		logStep("Switch IFrame to frame ["+i+"]", "Passed");
+	}
+	
+	public void switchIFrameParent() {
+		driver.switchTo().parentFrame();
+		logStep("Switch IFrame to Parent Frame", "Passed");
 	}
 	
 	public By dynXpath(By by, String replaceString) {
@@ -209,6 +311,13 @@ public class ReusableMethods {
 		log(tss);
 	}
 	
+	public void logStepSS(String testStep, String status, String ssID) {
+		TestStepStatus tss = new TestStepStatus(testStep, status);
+		String ssPath = takeScreenshot(ssID);
+		tss.addScreenShot(ssPath);
+		log(tss);
+	}
+	
 	public void log(TestStepStatus tss) {
 		testCaseStatus.addTestStepStatus(tss);
 		if(tss.getStepStatus().equals("Debug")) {
@@ -226,6 +335,26 @@ public class ReusableMethods {
 //		org.testng.Assert.
 		String text1 = getElementText(by);
 		verifyText(text1, verify, elementName);
+	}
+	
+	public void verifyGrid() {
+		String tableBasePath = "";
+		String rowBasePath = "";
+		String columnIds = ";;;";
+	}
+	
+	public void validateRegEx(String validate, String regExName, String elementName) {
+		String pattern = regEx.getProperty(regExName);
+		if(debug()) {
+			System.out.println(pattern);
+			logStep("Validate RegEx: ["+regExName+": '"+pattern+"'] on ["+elementName+"] with value ["+validate+"]", "Debug");
+		}
+		if(validate.matches(pattern)) {
+			logStep("Element: ["+elementName+": '"+validate+"'] Matched with RegEx: ["+regExName+": '"+pattern+"']", "Passed");
+		} else {
+			logStep("Element: ["+elementName+": '"+validate+"'] Failed Match with RegEx: ["+regExName+": '"+pattern+"']", "Failed");
+		}
+		
 	}
 	
 	public void waitForPageLoaded() {
@@ -261,6 +390,7 @@ public class ReusableMethods {
 		String ssPath = takeScreenshot(tcName);
 		testCaseStatus.setSSPath(ssPath);
 		driver.close();
+		driver.quit();
 	}
 	
 	@AfterTest
@@ -310,7 +440,7 @@ public class ReusableMethods {
 				+ "		</div>\r\n"
 				+ "	</td>\r\n"
 				+ "	<td>\r\n"
-				+ "		<a href=\""+ssPath+"\">\r\n"
+				+ "		<a href=\""+ssPath+"\" target=\"_blank\">\r\n"
 				+ "			<img src=\""+ssPath+"\"/>\r\n"
 				+ "		</a>\r\n"
 				+ "	</td>\r\n"

@@ -1,13 +1,11 @@
 
 
-import org.openqa.selenium.WebDriver;
 import org.testng.annotations.Test;
 
 public class SimpleTest extends ReusableMethods {
 	
 	
 	@Test(testName="Test1Pass")
-	
 	public void FirstTest() {
 		
 		//comment the above 2 lines and uncomment below 2 lines to use Chrome

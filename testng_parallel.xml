@@ -10,4 +10,9 @@
          <class name = "SimpleTest2" />     
       </classes>
    </test>
+   <test name = "Parallel Tests3">
+      <classes>
+         <class name = "SimpleTest3" />     
+      </classes>
+   </test>
 </suite>
