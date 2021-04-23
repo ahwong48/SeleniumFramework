@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import org.openqa.selenium.TakesScreenshot;
 
 public class ReusableMethods {
 	File screenShotFolder = new File("./SS");
+	File downloadsFolder = new File("./DL");
 	PropertyLoader config = new PropertyLoader("./config.properties");
 	PropertyLoader securityConfig = new PropertyLoader("./security.properties");
 	PropertyLoader regEx = new PropertyLoader("./src/References/regEx.properties");
@@ -73,12 +76,19 @@ public class ReusableMethods {
 			newRerunListFile = new File("./rerun.xml");
 			FileUtils.writeStringToFile(newHtmlFile, htmlSplit[0], "UTF-8", false);
 			FileUtils.writeStringToFile(newRerunListFile, xmlSplit[0], "UTF-8", false);
-			String[] oldScreenshots = screenShotFolder.list();
-			for(String oldFile : oldScreenshots) {
-				File currentFile = new File(screenShotFolder.getPath(),oldFile);
+			deleteFilesInFolder(screenShotFolder);
+			deleteFilesInFolder(downloadsFolder);
+		} catch (Exception e) {e.printStackTrace(); }
+	}
+	
+	public void deleteFilesInFolder(File file) {
+		try {
+			String[] oldFiles = file.list();
+			for(String oldFile : oldFiles) {
+				File currentFile = new File(file.getPath(),oldFile);
 				currentFile.delete();
 			}
-		} catch (Exception e) {e.printStackTrace(); }
+		} catch(Exception e) { System.out.println("WARNING: No Files to Delete");}
 	}
 	
 	@BeforeTest
@@ -116,6 +126,37 @@ public class ReusableMethods {
 	public void launchBrowser(String url) {
 		driver.get(url);
 		driver.manage().window().maximize();
+	}
+	
+	public void changeUrl(String url) {
+		driver.get(url);
+	}
+	
+	public void hoverElement(By by, String elementName) {
+		if(debug()) {
+			logStep("Hover Element Locator ["+by+"]", "Debug");
+		}
+		WebElement webElement = driver.findElement(by);
+		hoverElement(webElement, elementName);
+	}
+	
+	public void hoverElement(WebElement webElement, String elementName) {
+		Actions action = new Actions(driver);
+		action.moveToElement(webElement).perform();
+		logStep("Mouse Hover Element ["+elementName+"]", "Passed");
+	}
+	
+	public void switchToChildWindow() {
+		ArrayList<String> windowList = new ArrayList<String>(driver.getWindowHandles());
+	    driver.switchTo().window(windowList.get(windowList.size()-1));
+	    logStep("Switched to Child window ["+driver.getTitle()+"]", "Passed", takeScreenshot("WindowSwitch"));
+	}
+	
+	public void switchBackToParentWindow() {
+		ArrayList<String> windowList = new ArrayList<String>(driver.getWindowHandles());
+		driver.close();
+	    driver.switchTo().window(windowList.get(0));
+	    logStep("Switched back to Parent window ["+driver.getTitle()+"]", "Passed", takeScreenshot("WindowSwitch"));
 	}
 	
 	public WebElement findElement(By by) {
