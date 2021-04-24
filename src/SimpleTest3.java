@@ -18,7 +18,7 @@ public class SimpleTest3 extends ReusableMethods{
 //		assertElementText(By.xpath("//div[@id='droppedlist']/span"), "Draggable 1", "Dropped Element");
 		
 		launchBrowser("https://the-internet.herokuapp.com/drag_and_drop");
-		try{Thread.sleep(1000);} catch(Exception e) {}
+//		try{Thread.sleep(1000);} catch(Exception e) {}
 		dragAndDropCss("#column-a", "#column-b", "a", "b");
 		changeUrl("https://monkeytype.com");
 		validateRegEx("true", "rx_true_yes", "Element Name");
@@ -31,12 +31,12 @@ public class SimpleTest3 extends ReusableMethods{
 	    switchToChildWindow();
 	    
 	    System.out.println("Switched to new Window");
-	    try {Thread.sleep(5000);} catch(Exception e) {e.printStackTrace(); }
+//	    try {Thread.sleep(5000);} catch(Exception e) {e.printStackTrace(); }
 	    verifyText(getElementText(By.xpath("//h6")), "Complete the form below if you are a business or agency interested in advertising on Twitter Ads.", "h6 element in new tab");
 	    
 	    switchBackToParentWindow();
 	    System.out.println("Switched to new Window");
-	    try {Thread.sleep(5000);} catch(Exception e) {e.printStackTrace(); }
+//	    try {Thread.sleep(5000);} catch(Exception e) {e.printStackTrace(); }
 	    
 	    changeUrl("https://fastest.fish/test-files");
 	    clickElement(By.xpath("//a[contains(text(), '5MB')]"), "Download 5MB File");

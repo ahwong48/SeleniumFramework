@@ -54,9 +54,12 @@ public class ReusableMethods {
 	static int debugCount;
 	static File newHtmlFile;
 	static File newRerunListFile;
+	long startTime;
+	long endTime;
 
 	@BeforeSuite
 	public void beforeSuite(ITestContext context) {
+		startTime = System.nanoTime();
 		passedCount = 0;
 		failedCount = 0;
 		debugCount = 0;
@@ -72,7 +75,7 @@ public class ReusableMethods {
 			htmlString = htmlString.replace("@timestamp@", timestamp);
 			htmlSplit = htmlString.split("<!--replace-->");
 			xmlSplit = xmlString.split("<!--replace-->");
-			newHtmlFile = new File("./new.html");
+			newHtmlFile = new File("./"+config.getProperty("reportName")+".html");
 			newRerunListFile = new File("./rerun.xml");
 			FileUtils.writeStringToFile(newHtmlFile, htmlSplit[0], "UTF-8", false);
 			FileUtils.writeStringToFile(newRerunListFile, xmlSplit[0], "UTF-8", false);
@@ -445,6 +448,7 @@ public class ReusableMethods {
 		String passFail;
 		String lastStep = "";
 		String ssPath = testCaseStatus.getSSPath();
+		testCaseStatus.endTestCase();
 		
 		if(testCaseStatus.passed()) { 
 			collapsible = "collapsiblePass";
@@ -485,6 +489,8 @@ public class ReusableMethods {
 				+ "			<img src=\""+ssPath+"\"/>\r\n"
 				+ "		</a>\r\n"
 				+ "	</td>\r\n"
+				+ "	<td>"+convertNanoToTime(testCaseStatus.getElapsedTime())
+				+ "	</td>\r\n"
 				+ "  </tr>"+"\r\n<!--replace-->";
 		if(testCaseStatus.passed()) {
 			passedCount++;
@@ -499,10 +505,12 @@ public class ReusableMethods {
 	@AfterSuite
 	public void postSuite(){
 		try {
+			endTime = System.nanoTime();
 			String postHtml = htmlSplit[1];
 			postHtml = postHtml.replace("##", ""+passedCount);
 			postHtml = postHtml.replace("$$", ""+failedCount);
 			postHtml = postHtml.replace("%%", ""+debugCount);
+			postHtml = postHtml.replace("@elapsedTime@", convertNanoToTime(endTime-startTime));
 			FileUtils.writeStringToFile(newHtmlFile, postHtml, "UTF-8", true);
 			FileUtils.writeStringToFile(newRerunListFile, xmlSplit[1], "UTF-8", true);
 		} catch (Exception e) {e.printStackTrace();}
@@ -510,5 +518,17 @@ public class ReusableMethods {
 	
 	public boolean debug() {
 		return config.getProperty("debug").equals("true");
+	}
+	
+	public String convertNanoToTime(long nano) {
+		int hour = 0;
+		int mins = 0;
+		int secs = 0;
+		double seconds = (double)nano / 1_000_000_000.0;
+		mins = (int) Math.floor(seconds/60);
+		secs = (int) seconds - (mins*60);
+		hour = (int) Math.floor(mins/60);
+		mins -= (hour*60);
+		return String.format("%02d", hour)+":"+String.format("%02d", mins)+":"+String.format("%02d", secs);
 	}
 }

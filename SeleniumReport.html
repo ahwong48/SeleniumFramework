@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Google Selenium Report - 20210329-19.17.40</title>
+  <title>Google Selenium Report - 20210423-17.13.41</title>
   <meta name="description" content="Google Selenium Report - @SeleniumRun@">
   <meta name="author" content="ahwong48">
 
@@ -110,11 +110,11 @@ img:hover {
 </head>
 <body>
 
-<h2>Google Selenium Report - 20210329-19.17.40</h2>
+<h2>Google Selenium Report - 20210423-17.13.41</h2>
 
 <table>
   <tr>
-    <th>Module</th><th>Test Case</th><th>Status</th><th>Final Image Verification</th>
+    <th>Module</th><th>Test Case</th><th>Status</th><th>Final Image Verification</th><th>Time Elapsed</th>
   </tr>
   <!--example--> <!--
   <tr>
@@ -156,22 +156,66 @@ img:hover {
   <!--start-->
   <tr>
 	<td></td>
-	<td>Default test</td>
+	<td>Parallel Tests1</td>
 	<td>
 		<button class="collapsibleFail"><b>Failed:</b> testStep1a</button>
 		<div class="content">
+<p style="color:DarkGreen;"><b>Clicked Element: [Google Search Box]</b></p>
 <p style="color:DarkGreen;"><b>Input Text [pokemon] in Element: [Google Search Box]</b></p>
-<p><a style="color:Maroon;" href="./SS/Default test-20210329-19.17.44-SS-DEBUGSCREENSHOT.png"><b>testStep1a</b></a></p>
-<p><a style="color:OrangeRed;" href="./SS/Default test-20210329-19.17.44-SS-testStep1b-Debug.png"><b>testStep1b</b></a></p>
-<p style="color:DarkGreen;"><b>testStep1c</b></p>
-<p style="color:DarkGreen;"><b>Verify Element Text of [Page Title]: element [Google] and expected [Google]</b></p>
+<p><a style="color:Maroon;" href="./SS/Parallel Tests1-20210423-17.13.45-SS-DEBUGSCREENSHOT.png" target="_blank"><b>testStep1a</b></a></p>
 		</div>
 	</td>
 	<td>
-		<a href="./SS/Default test-20210329-19.17.44-SS-Default test.png">
-			<img src="./SS/Default test-20210329-19.17.44-SS-Default test.png"/>
+		<a href="./SS/Parallel Tests1-20210423-17.13.46-SS-Parallel Tests1.png" target="_blank">
+			<img src="./SS/Parallel Tests1-20210423-17.13.46-SS-Parallel Tests1.png"/>
 		</a>
 	</td>
+	<td>00:00:09	</td>
+  </tr>
+<!--replace--><tr>
+	<td></td>
+	<td>Parallel Tests2</td>
+	<td>
+		<button class="collapsiblePass"><b>Passed:</b> Clicked Element: [Next button]</button>
+		<div class="content">
+<p style="color:DarkGreen;"><b>Verify Element Text of [Page Title]: element [Google] and expected [Google]</b></p>
+<p style="color:DarkGreen;"><b>Clicked Element: [Sign In Button]</b></p>
+<p style="color:DarkGreen;"><b>Clicked Element: [Login Text Box]</b></p>
+<p style="color:DarkGreen;"><b>Input Text [SAVQA001] in Element: [Login Text Box]</b></p>
+<p style="color:DarkGreen;"><b>Clicked Element: [Next button]</b></p>
+		</div>
+	</td>
+	<td>
+		<a href="./SS/Parallel Tests2-20210423-17.13.48-SS-Parallel Tests2.png" target="_blank">
+			<img src="./SS/Parallel Tests2-20210423-17.13.48-SS-Parallel Tests2.png"/>
+		</a>
+	</td>
+	<td>00:00:11	</td>
+  </tr>
+<!--replace--><tr>
+	<td></td>
+	<td>Parallel Tests3</td>
+	<td>
+		<button class="collapsiblePass"><b>Passed:</b> Clicked Element: [Download 5MB File]</button>
+		<div class="content">
+<p><a style="color:DarkGreen;" href="./SS/Parallel Tests3-20210423-17.13.46-SS-PreDnD.png" target="_blank"><b>Drag and Drop: Before Drag and Drop</b></a></p>
+<p><a style="color:DarkGreen;" href="./SS/Parallel Tests3-20210423-17.13.46-SS-PostDnD.png" target="_blank"><b>Drag and Drop Element: [start:a|end:b]</b></a></p>
+<p style="color:DarkGreen;"><b>Element: [Element Name: 'true'] Matched with RegEx: [rx_true_yes: '[tT]rue|[yY]es']</b></p>
+<p style="color:DarkGreen;"><b>Mouse Hover Element [Resources and Guide Menu]</b></p>
+<p style="color:DarkGreen;"><b>Clicked Element: [Agency Resources]</b></p>
+<p style="color:DarkGreen;"><b>Clicked Element: [Contact Sales]</b></p>
+<p><a style="color:DarkGreen;" href="./SS/Parallel Tests3-20210423-17.13.55-SS-WindowSwitch.png" target="_blank"><b>Switched to Child window [Contact the Twitter Ads team]</b></a></p>
+<p style="color:DarkGreen;"><b>Verify Element Text of [h6 element in new tab]: element [Complete the form below if you are a business or agency interested in advertising on Twitter Ads.] and expected [Complete the form below if you are a business or agency interested in advertising on Twitter Ads.]</b></p>
+<p><a style="color:DarkGreen;" href="./SS/Parallel Tests3-20210423-17.13.55-SS-WindowSwitch.png" target="_blank"><b>Switched back to Parent window [Agency resources]</b></a></p>
+<p style="color:DarkGreen;"><b>Clicked Element: [Download 5MB File]</b></p>
+		</div>
+	</td>
+	<td>
+		<a href="./SS/Parallel Tests3-20210423-17.14.02-SS-Parallel Tests3.png" target="_blank">
+			<img src="./SS/Parallel Tests3-20210423-17.14.02-SS-Parallel Tests3.png"/>
+		</a>
+	</td>
+	<td>00:00:21	</td>
   </tr>
 <!--replace-->
   <!--end-->
@@ -180,9 +224,10 @@ img:hover {
 
 <table id="OverallStatsTable"><b>
 <tr>
-	<th id="PassStat" style="color:DarkGreen">Passed: 0 </th>
+	<th id="ElapsedTime" style="color:Black">Total Elapsed Time (HH:MM:SS): 00:00:21</th>
+	<th id="PassStat" style="color:DarkGreen">Passed: 2 </th>
 	<th id="FailStat" style="color:Maroon">Failed: 1</th>
-	<th id="DebugStat" style="color:OrangeRed">Debug: 1</th>
+	<th id="DebugStat" style="color:OrangeRed">Debug: 0</th>
 </tr>
 </table>
 <br>

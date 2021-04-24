@@ -6,11 +6,14 @@ public class TestCaseStatus {
 	private int testCaseStatus = 0;
 	private String ssPath;
 	private String testClass;
+	private long startTime = 0;
+	private long endTime = 0;
 	
 	public TestCaseStatus() {
 		tssList = new ArrayList<TestStepStatus>(); 
 		testCaseStatus = 0;
 		ssPath = "";
+		startTime = System.nanoTime();
 	}
 	
 	public void addTestStepStatus(TestStepStatus tss) {
@@ -53,5 +56,13 @@ public class TestCaseStatus {
 	
 	public String getLatestFailedStep() {
 		return latestFailedStep;
+	}
+	
+	public void endTestCase() {
+		endTime = System.nanoTime();
+	}
+	
+	public long getElapsedTime() {
+		return (endTime-startTime);
 	}
 }
