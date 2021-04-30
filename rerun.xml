@@ -1,9 +1,0 @@
-<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name = "Parallel Testing Suite" parallel = "tests">
-   <test name = "Default test">
-      <classes>
-         <class name = "SimpleTest" />     
-      </classes>
-   </test>
-
-</suite>
