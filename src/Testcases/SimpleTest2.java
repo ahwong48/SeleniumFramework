@@ -1,11 +1,12 @@
-
-
+package Testcases;
+import FrameworkBase.*;
+import Locators.*;
 import org.testng.annotations.Test;
 
 public class SimpleTest2 extends ReusableMethods {
-	
-	@Test(testName="Test2Pass")
-	public void InputTestAndAssertions() {
+    
+    @Test(testName="Test2Pass", groups= {"regression"})
+    public void InputTestAndAssertions() {
         
         String expectedTitle = "Google"; // Powerful Cross Browser Testing Tool Online | LambdaTest";
         String actualTitle = "";
@@ -15,7 +16,7 @@ public class SimpleTest2 extends ReusableMethods {
  
         // get the actual value of the title
         actualTitle = driver.getTitle();
-//		wait(5);
+//        wait(5);
 
 //        waitForPageLoaded();
         

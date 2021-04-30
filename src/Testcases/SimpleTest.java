@@ -1,17 +1,19 @@
-
-
+package Testcases;
+import Locators.*;
+import FrameworkBase.*;
+import Locators.*;
 import org.testng.annotations.Test;
 
 public class SimpleTest extends ReusableMethods {
-	
-	
-	@Test(testName="Test1Pass")
-	public void FirstTest() {
-		
-		//comment the above 2 lines and uncomment below 2 lines to use Chrome
-		//System.setProperty("webdriver.chrome.driver","G:\\chromedriver.exe");
-		//WebDriver driver = new ChromeDriver();
-    	
+    
+    
+    @Test(testName="Test1Pass", groups= {"sanity"})
+    public void FirstTest() {
+        
+        //comment the above 2 lines and uncomment below 2 lines to use Chrome
+        //System.setProperty("webdriver.chrome.driver","G:\\chromedriver.exe");
+        //WebDriver driver = new ChromeDriver();
+        
         String expectedTitle = "Google";
         String actualTitle = "";
  

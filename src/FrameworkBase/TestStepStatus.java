@@ -1,3 +1,4 @@
+package FrameworkBase;
 
 public class TestStepStatus {
 	String testStep;

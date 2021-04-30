@@ -1,0 +1,3 @@
+Testcases.SimpleTest,sanity,metadata
+Testcases.SimpleTest2,regression,metadata
+Testcases.SimpleTest3,sanity.regression,metadata

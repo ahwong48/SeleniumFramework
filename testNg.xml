@@ -1,18 +1,19 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name = "Parallel Testing Suite" parallel = "tests">
-   <test name = "Parallel Tests1">
+<test name = "Testcases.SimpleTest">
       <classes>
          <class name = "Testcases.SimpleTest" />     
       </classes>
    </test>
-   <test name = "Parallel Tests2">
+<test name = "Testcases.SimpleTest2">
       <classes>
          <class name = "Testcases.SimpleTest2" />     
       </classes>
    </test>
-   <test name = "Parallel Tests3">
+<test name = "Testcases.SimpleTest3">
       <classes>
          <class name = "Testcases.SimpleTest3" />     
       </classes>
    </test>
+
 </suite>

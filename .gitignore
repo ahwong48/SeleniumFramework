@@ -4,6 +4,8 @@
 /.settings
 /target
 /test-output
+/SS/empty.txt
 /SS
+/DL/empty.txt
 /DL
 rerun.xml
