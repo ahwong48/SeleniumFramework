@@ -1,19 +1,9 @@
 package FrameworkBase;
-import Locators.*;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
-
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -21,24 +11,19 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.ITestContext;
 import org.testng.annotations.*;
-import org.testng.asserts.SoftAssert;
-
-import jdk.jfr.Timespan;
-
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
 public class ReusableMethods {
     File screenShotFolder = new File("./SS");
     File downloadsFolder = new File("./DL");
+    File compareFolder = new File("./rerun");
     PropertyLoader config = new PropertyLoader("./config.properties");
     protected PropertyLoader securityConfig = new PropertyLoader("./security.properties");
     PropertyLoader regEx = new PropertyLoader("./src/References/regEx.properties");
@@ -58,6 +43,9 @@ public class ReusableMethods {
     static int debugCount;
     static File newHtmlFile;
     static File newRerunListFile;
+    static File newRerunBase;
+    static File newComparePass;
+    static File newCompareFail;
     long startTime;
     long endTime;
 
@@ -71,20 +59,37 @@ public class ReusableMethods {
             context.getSuite().getXmlSuite().setThreadCount(Integer.parseInt(config.getProperty("thread-count")));
             File htmlTemplateFile = new File("./htmlReportTemplate.html");
             File rerunTemplateFile = new File("./testNgXmlTemplate.xml");
-            htmlString = FileUtils.readFileToString(htmlTemplateFile, "UTF-8");
-            xmlString = FileUtils.readFileToString(rerunTemplateFile,"UTF-8");
             String app = config.getProperty("appName");
             String timestamp = timestamp();
-            htmlString = htmlString.replace("@Application@", app);
-            htmlString = htmlString.replace("@timestamp@", timestamp);
-            htmlSplit = htmlString.split("<!--replace-->");
-            xmlSplit = xmlString.split("<!--replace-->");
             newHtmlFile = new File("./"+config.getProperty("reportName")+".html");
-            newRerunListFile = new File("./testNgRerun.xml");
-            FileUtils.writeStringToFile(newHtmlFile, htmlSplit[0], "UTF-8", false);
+            newRerunListFile = new File("./rerun/testNgRerun.xml");
+            newRerunBase = new File("./rerun/rerunReportBase.html");
+            newComparePass = new File("./rerun/comparePass.txt");
+            newCompareFail = new File("./rerun/compareFail.txt");
+            
+            xmlString = FileUtils.readFileToString(rerunTemplateFile,"UTF-8");
+            if(!rerun()) {
+            	htmlString = FileUtils.readFileToString(htmlTemplateFile, "UTF-8");
+                htmlString = htmlString.replace("@Application@", app);
+                htmlSplit = htmlString.split("<!--replace-->");
+            	FileUtils.writeStringToFile(newRerunBase, htmlSplit[0], "UTF-8", false);
+            	newComparePass.createNewFile();
+            	FileUtils.writeStringToFile(newComparePass, "", "UTF-8", false);
+            } else {
+            	htmlString = FileUtils.readFileToString(newRerunBase, "UTF-8");
+                htmlSplit = htmlString.split("<!--replace-->");
+                htmlSplit[0] = htmlSplit[0].replace("@timestamp@", timestamp);
+            }
+            xmlSplit = xmlString.split("<!--replace-->");
             FileUtils.writeStringToFile(newRerunListFile, xmlSplit[0], "UTF-8", false);
-            deleteFilesInFolder(screenShotFolder);
-            deleteFilesInFolder(downloadsFolder);
+            FileUtils.writeStringToFile(newHtmlFile, htmlSplit[0], "UTF-8", false);
+            newCompareFail.createNewFile();
+        	FileUtils.writeStringToFile(newCompareFail, "", "UTF-8", false);
+            if(!rerun()) {
+	            deleteFilesInFolder(screenShotFolder);
+	            deleteFilesInFolder(downloadsFolder);
+	            deleteFilesInFolder(compareFolder);
+            }
         } catch (Exception e) {e.printStackTrace(); }
     }
     
@@ -549,11 +554,18 @@ public class ReusableMethods {
                 + "    </td>\r\n"
                 + "    <td>"+convertNanoToTime(testCaseStatus.getElapsedTime())
                 + "    </td>\r\n"
-                + "  </tr>"+"\r\n<!--replace-->";
+                + "  </tr>"+"\r\n";
         if(testCaseStatus.passed()) {
             passedCount++;
+            try {
+            	FileUtils.writeStringToFile(newRerunBase, htmlRowEntry, "UTF-8", true);
+            	FileUtils.writeStringToFile(newComparePass, testCase+",PASS\n", "UTF-8", true);
+            } catch (Exception e) { e.printStackTrace(); }   
         } else {
             failedCount++;
+            try {
+            	FileUtils.writeStringToFile(newCompareFail, testCase+",FAIL\n", "UTF-8", true);
+            } catch (Exception e) { e.printStackTrace(); }  
         }
         try {
             FileUtils.writeStringToFile(newHtmlFile, htmlRowEntry, "UTF-8", true);
@@ -563,6 +575,8 @@ public class ReusableMethods {
     @AfterSuite
     public void postSuite(){
         try {
+        	FileUtils.writeStringToFile(newRerunBase, "<!--replace-->", "UTF-8", true); // for splitting next run
+        	FileUtils.writeStringToFile(newRerunBase, htmlSplit[1], "UTF-8", true);
             endTime = System.nanoTime();
             String postHtml = htmlSplit[1];
             postHtml = postHtml.replace("##", ""+passedCount);
@@ -571,11 +585,34 @@ public class ReusableMethods {
             postHtml = postHtml.replace("@elapsedTime@", convertNanoToTime(endTime-startTime));
             FileUtils.writeStringToFile(newHtmlFile, postHtml, "UTF-8", true);
             FileUtils.writeStringToFile(newRerunListFile, xmlSplit[1], "UTF-8", true);
+            
+            File compareOutput = new File("./rerun/compareOutput.csv");
+            FileUtils.writeStringToFile(compareOutput, "Test Case,Status\n", "UTF-8", false);
+            String input = FileUtils.readFileToString(newComparePass, "UTF-8");
+            FileUtils.writeStringToFile(compareOutput, input, "UTF-8", true);
+            input = FileUtils.readFileToString(newCompareFail, "UTF-8");
+            FileUtils.writeStringToFile(compareOutput, input, "UTF-8", true);
         } catch (Exception e) {e.printStackTrace();}
+    }
+    
+    @AfterSuite
+    public void createEmptyFiles() { // used to populate the folders
+    	File emptyDLFile = new File("./DL/empty.txt");
+    	File emptySSFile = new File("./SS/empty.txt");
+    	File emptyCompareFile = new File("./rerun/empty.txt");
+    	try {
+	    	FileUtils.writeStringToFile(emptyDLFile, "", "UTF-8", false);
+	    	FileUtils.writeStringToFile(emptySSFile, "", "UTF-8", false);
+	    	FileUtils.writeStringToFile(emptyCompareFile, "", "UTF-8", false);
+    	} catch(Exception e) { e.printStackTrace(); }
     }
     
     public boolean debug() {
         return config.getProperty("debug").equals("true");
+    }
+    
+    public boolean rerun() {
+        return config.getProperty("rerun").equals("true");
     }
     
     public String convertNanoToTime(long nano) {

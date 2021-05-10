@@ -35,13 +35,17 @@ public class TestNGAutomation {
 		}
     	
     	PropertyLoader config = new PropertyLoader("./config.properties");
-    	String tags = config.getProperty("tags");
-        generateTestNGxml(tags);
-    	System.out.println("File Created: ./testNg.xml - with tags ["+tags+"] (if not specified - runs all tcs)");
     	String xmlFileName = "./testNg.xml";
-    	if(config.getProperty("rerun").equals("1")) { xmlFileName = "./testNgRerun.xml"; }
+    	if(config.getProperty("rerun").equals("true")) {
+    		xmlFileName = "./rerun/testNgRerun.xml"; 
+	    	System.out.println("File Used: ./rerun/testNgRerun.xml - Rerunning Previously Failed Tests");
+		}
+    	else {
+    		String tags = config.getProperty("tags");
+	        generateTestNGxml(tags);
+	    	System.out.println("File Created: ./testNg.xml - with tags ["+tags+"] (if not specified - runs all tcs)");
+    	}
     	runTestNg(xmlFileName);
-//    	if(!config.getProperty("config").equals("01")) { createCompareFile(); }
     }
     
     public static void runTestNg(String file) throws FileNotFoundException{
