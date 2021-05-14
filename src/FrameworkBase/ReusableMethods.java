@@ -217,6 +217,26 @@ public class ReusableMethods {
     
     public void inputText(WebElement e, String s, String elementName) {
         scrollToElement(e);
+        e.clear();
+        clickElement(e, elementName);
+        e.sendKeys(s);
+    }
+    
+    public void inputTextNoClear(By by, String s, String elementName) {
+        WebElement e = findElement(by);
+        if(debug()) {
+            logStep("Input Text Without Clear Locator: ["+by+"]", "Debug");
+        }
+        if(e != null) {
+        	inputTextNoClear(e, s, elementName);
+            logStep("Input Text Without Clear ["+s+"] in Element: ["+elementName+"]", "Passed");
+        } else {
+            logStep("Unable to find Element ["+elementName+"] to input Text without Clear: ["+by.toString()+"]", "Failed");
+        }
+    }
+    
+    public void inputTextNoClear(WebElement e, String s, String elementName) {
+        scrollToElement(e);
         clickElement(e, elementName);
         e.sendKeys(s);
     }
@@ -588,10 +608,15 @@ public class ReusableMethods {
             
             File compareOutput = new File("./rerun/compareOutput.csv");
             FileUtils.writeStringToFile(compareOutput, "Test Case,Status\n", "UTF-8", false);
-            String input = FileUtils.readFileToString(newComparePass, "UTF-8");
-            FileUtils.writeStringToFile(compareOutput, input, "UTF-8", true);
-            input = FileUtils.readFileToString(newCompareFail, "UTF-8");
-            FileUtils.writeStringToFile(compareOutput, input, "UTF-8", true);
+            String input = "";
+            if(newComparePass.exists()) {
+            	input = FileUtils.readFileToString(newComparePass, "UTF-8");
+            	FileUtils.writeStringToFile(compareOutput, input, "UTF-8", true);
+            }
+            if(newCompareFail.exists()) {
+	            input = FileUtils.readFileToString(newCompareFail, "UTF-8");
+	            FileUtils.writeStringToFile(compareOutput, input, "UTF-8", true);
+            }
         } catch (Exception e) {e.printStackTrace();}
     }
     
@@ -605,6 +630,15 @@ public class ReusableMethods {
 	    	FileUtils.writeStringToFile(emptySSFile, "", "UTF-8", false);
 	    	FileUtils.writeStringToFile(emptyCompareFile, "", "UTF-8", false);
     	} catch(Exception e) { e.printStackTrace(); }
+    }
+    
+    public void sleep(long miliseconds) {
+    	try {
+    		Thread.sleep(miliseconds);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		logStep("Wait for ["+miliseconds+"] miliseconds Failed", "Failed");
+    	}
     }
     
     public boolean debug() {
