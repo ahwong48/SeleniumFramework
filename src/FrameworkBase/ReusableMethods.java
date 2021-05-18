@@ -51,6 +51,12 @@ public class ReusableMethods {
 
     @BeforeSuite
     public void beforeSuite(ITestContext context) {
+    	if(!rerun()) {
+            deleteFilesInFolder(screenShotFolder);
+            deleteFilesInFolder(downloadsFolder);
+            deleteFilesInFolder(compareFolder);
+        }
+    	
         startTime = System.nanoTime();
         passedCount = 0;
         failedCount = 0;
@@ -68,28 +74,24 @@ public class ReusableMethods {
             newCompareFail = new File("./rerun/compareFail.txt");
             
             xmlString = FileUtils.readFileToString(rerunTemplateFile,"UTF-8");
+            xmlSplit = xmlString.split("<!--replace-->");
+            System.out.println(xmlSplit[0]);
+            FileUtils.writeStringToFile(newRerunListFile, xmlSplit[0], "UTF-8", false);
             if(!rerun()) {
             	htmlString = FileUtils.readFileToString(htmlTemplateFile, "UTF-8");
                 htmlString = htmlString.replace("@Application@", app);
-                htmlSplit = htmlString.split("<!--replace-->");
-            	FileUtils.writeStringToFile(newRerunBase, htmlSplit[0], "UTF-8", false);
-            	newComparePass.createNewFile();
-            	FileUtils.writeStringToFile(newComparePass, "", "UTF-8", false);
+                FileUtils.writeStringToFile(newComparePass, "", "UTF-8", false);
+            	FileUtils.writeStringToFile(newCompareFail, "", "UTF-8", false);
             } else {
             	htmlString = FileUtils.readFileToString(newRerunBase, "UTF-8");
                 htmlSplit = htmlString.split("<!--replace-->");
-                htmlSplit[0] = htmlSplit[0].replace("@timestamp@", timestamp);
             }
-            xmlSplit = xmlString.split("<!--replace-->");
-            FileUtils.writeStringToFile(newRerunListFile, xmlSplit[0], "UTF-8", false);
+            htmlSplit = htmlString.split("<!--replace-->");
+            FileUtils.writeStringToFile(newRerunBase, htmlSplit[0], "UTF-8", false);
+            htmlSplit[0] = htmlSplit[0].replace("@timestamp@", timestamp);
             FileUtils.writeStringToFile(newHtmlFile, htmlSplit[0], "UTF-8", false);
             newCompareFail.createNewFile();
         	FileUtils.writeStringToFile(newCompareFail, "", "UTF-8", false);
-            if(!rerun()) {
-	            deleteFilesInFolder(screenShotFolder);
-	            deleteFilesInFolder(downloadsFolder);
-	            deleteFilesInFolder(compareFolder);
-            }
         } catch (Exception e) {e.printStackTrace(); }
     }
     
@@ -434,11 +436,13 @@ public class ReusableMethods {
     }
     
     public boolean waitForElementVisible(By by, String elementName) {
-        WebDriverWait wait = new WebDriverWait(driver, 4*Integer.parseInt(config.getProperty("waitTime")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-        int itemsFound = driver.findElements(by).size();
-        if(debug()) { logStep("#"+itemsFound+" of Elements found for ["+elementName+" | "+by.toString()+"]", "Debug"); }
-        return (itemsFound > 0);
+    	try {
+	        WebDriverWait wait = new WebDriverWait(driver, 4*Integer.parseInt(config.getProperty("waitTime")));
+	        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+	        int itemsFound = driver.findElements(by).size();
+	        if(debug()) { logStep("#"+itemsFound+" of Elements found for ["+elementName+" | "+by.toString()+"]", "Debug"); }
+	        return (itemsFound > 0);
+    	} catch (Exception e) {e.printStackTrace(); return false;}
     }
     
     public boolean isElementDisplayed(By by, String elementName) {
@@ -455,19 +459,13 @@ public class ReusableMethods {
     }
     
     public boolean isElementDisplayedVerification(By by, String elementName) {
-        try {
-            WebElement we = driver.findElement(by);
-            if(we != null) {
-                logStep("Element ["+elementName+"] was not found", "Passed");
-                return true;
-            } else {
-                logStep("Element ["+elementName+"] was not found", "Failed");
-                return false;
-            }
-        } catch(Exception e) {
-            logStep("Element ["+elementName+"] was not found", "Failed");
+    	if(isElementDisplayed(by, elementName)) {
+    		logStep("Element ["+elementName+"] was found", "Passed");
+            return true;
+    	} else {
+    		logStep("Element ["+elementName+"] was not found", "Failed");
             return false;
-        }
+    	}
     }
     
     public void validateRegEx(String validate, String regExName, String elementName) {
@@ -596,7 +594,7 @@ public class ReusableMethods {
     public void postSuite(){
         try {
         	FileUtils.writeStringToFile(newRerunBase, "<!--replace-->", "UTF-8", true); // for splitting next run
-        	FileUtils.writeStringToFile(newRerunBase, htmlSplit[1], "UTF-8", true);
+        	FileUtils.writeStringToFile(newRerunBase, xmlSplit[1], "UTF-8", true);
             endTime = System.nanoTime();
             String postHtml = htmlSplit[1];
             postHtml = postHtml.replace("##", ""+passedCount);
