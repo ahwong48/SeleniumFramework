@@ -22,19 +22,19 @@ public class TestNGAutomation {
     public static void main(String[] args) throws IOException, FileNotFoundException {
     	// args = { tags, debug, rerun, compare, thread-count, waitTime}
     	Properties defaultConfig = new Properties();
-    	InputStream in = new FileInputStream("./defaultConfig.properties");
+    	InputStream in = new FileInputStream("./Templates/defaultConfig.properties");
     	defaultConfig.load(in);
     	for(String setProp : args) {
     		String[] set = setProp.split("=");
     		defaultConfig.setProperty(set[0], set[1]);
     	}
     	try (final OutputStream outputstream 
-                = new FileOutputStream("config.properties");) {
+                = new FileOutputStream("./properties/config.properties");) {
 			defaultConfig.store(outputstream,"File Updated");
 			outputstream.close();
 		}
     	
-    	PropertyLoader config = new PropertyLoader("./config.properties");
+    	PropertyLoader config = new PropertyLoader("./properties/config.properties");
     	String xmlFileName = "./testNg.xml";
     	if(config.getProperty("rerun").equals("true")) {
     		xmlFileName = "./rerun/testNgRerun.xml"; 
@@ -59,7 +59,7 @@ public class TestNGAutomation {
     public static void generateTestNGxml(String tags) {
     	
     	try { 
-	    	File testNgTemplateFile = new File("./testNgXmlTemplate.xml");
+	    	File testNgTemplateFile = new File("./Templates/testNgXmlTemplate.xml");
 	        String xmlString = FileUtils.readFileToString(testNgTemplateFile,"UTF-8");
 	        String[] xmlSplit = xmlString.split("<!--replace-->");
 	    	File testNgXml = new File("./testNg.xml");

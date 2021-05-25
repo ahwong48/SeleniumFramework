@@ -24,8 +24,8 @@ public class ReusableMethods {
     File screenShotFolder = new File("./SS");
     File downloadsFolder = new File("./DL");
     File compareFolder = new File("./rerun");
-    PropertyLoader config = new PropertyLoader("./config.properties");
-    protected PropertyLoader securityConfig = new PropertyLoader("./security.properties");
+    PropertyLoader config = new PropertyLoader("./properties/config.properties");
+    protected PropertyLoader securityConfig = new PropertyLoader("./properties/security.properties");
     PropertyLoader regEx = new PropertyLoader("./src/References/regEx.properties");
     protected WebDriver driver;
     final String home = config.getProperty("url");
@@ -63,8 +63,8 @@ public class ReusableMethods {
         debugCount = 0;
         try {
             context.getSuite().getXmlSuite().setThreadCount(Integer.parseInt(config.getProperty("thread-count")));
-            File htmlTemplateFile = new File("./htmlReportTemplate.html");
-            File rerunTemplateFile = new File("./testNgXmlTemplate.xml");
+            File htmlTemplateFile = new File("./Templates/htmlReportTemplate.html");
+            File rerunTemplateFile = new File("./Templates/testNgXmlTemplate.xml");
             String app = config.getProperty("appName");
             String timestamp = timestamp();
             newHtmlFile = new File("./"+config.getProperty("reportName")+".html");
@@ -412,19 +412,47 @@ public class ReusableMethods {
         verifyText(text1, verify, elementName);
     }
     
-    public void verifyGrid(String gridName, String verificationValues) {
-        String tableBasePath = "";
-        String rowBasePath = "";
-        String columnPath = "";
-        String[] verify = verificationValues.split(";");
-        
-        String xpath = tableBasePath + rowBasePath;
-        for(String v : verify) {
-            xpath += (columnPath.replace("@1@", v));
-        }
-        if(isElementDisplayed(By.xpath(xpath), gridName)) {
-            
-        }
+    
+    // maybe take an inputstring -> # of columns + name the columns (eg. "Column1;Column2;Column3;Column4")
+//    public void verifyTable(String gridName, String columnHeaders, String verificationValues) {
+//        String tableBasePath = "";
+//        String rowBasePath = "";
+//        String columnPath = "";
+//        String[] verify = verificationValues.split(";");
+//        
+//        String xpath = tableBasePath + rowBasePath;
+//        for(String v : verify) {
+//            xpath += (columnPath.replace("@1@", v));
+//        }
+//        if(isElementDisplayed(By.xpath(xpath), gridName)) {
+//            
+//        }
+//    }
+
+    public String generateTableXpathHeader(String metadata) {
+    	String gen = "//th";
+    	String following = "//following-sibling::th";
+    	String[] md = metadata.split(";");
+    	return generateTableXpathGeneral(gen, following, md);
+    }
+
+    public String generateTableXpathRow(String metadata) {
+    	String gen = "//td";
+    	String following = "//following-sibling::td";
+    	String[] md = metadata.split(";");
+    	return generateTableXpathGeneral(gen, following, md);
+    }
+    
+    public String generateTableXpathGeneral(String gen, String following, String[] md) {
+    	for(int i = 0; i < md.length; i++) {
+    		String meta = md[i];
+    		if(i != 0) {
+    			gen += following;
+    		}
+    		gen += "["+meta+"]";
+    		i++;
+    	}
+    	return gen;
     }
     
     public boolean waitForElementDisappear(By by, String elementName) {
@@ -479,7 +507,6 @@ public class ReusableMethods {
         } else {
             logStep("Element: ["+elementName+": '"+validate+"'] Failed Match with RegEx: ["+regExName+": '"+pattern+"']", "Failed");
         }
-        
     }
     
     public void waitForPageLoaded() {
