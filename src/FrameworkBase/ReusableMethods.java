@@ -191,8 +191,12 @@ public class ReusableMethods {
     }
     
     public String getElementText(By by) {
-        WebElement e = findElement(by);
-        return getElementText(e);
+    	if(waitShortVisible(by, "getElementText")) {
+	        WebElement e = findElement(by);
+	        return getElementText(e);
+    	} else {
+    		return "[ERROR]:NO ELEMENT VISIBLE";
+    	}
     }
     
     public String getElementText(WebElement e) {
@@ -205,11 +209,11 @@ public class ReusableMethods {
     }
     
     public void inputText(By by, String s, String elementName) {
-        WebElement e = findElement(by);
         if(debug()) {
             logStep("Input Text Locator: ["+by+"]", "Debug");
         }
-        if(e != null) {
+        if(waitShortVisible(by, elementName)) {
+            WebElement e = findElement(by);
             inputText(e, s, elementName);
             logStep("Input Text ["+s+"] in Element: ["+elementName+"]", "Passed");
         } else {
@@ -225,11 +229,12 @@ public class ReusableMethods {
     }
     
     public void inputTextNoClear(By by, String s, String elementName) {
-        WebElement e = findElement(by);
+        
         if(debug()) {
             logStep("Input Text Without Clear Locator: ["+by+"]", "Debug");
         }
-        if(e != null) {
+        if(waitShortVisible(by, elementName)) {
+        	WebElement e = findElement(by);
         	inputTextNoClear(e, s, elementName);
             logStep("Input Text Without Clear ["+s+"] in Element: ["+elementName+"]", "Passed");
         } else {
@@ -244,11 +249,11 @@ public class ReusableMethods {
     }
     
     public void clickElement(By by, String elementName) {
-        WebElement e = findElement(by);
         if(debug()) {
             logStep("Click Element Locator: ["+by+"]", "Debug");
         }
-        if(e.isDisplayed()) {
+        if(waitShortVisible(by, elementName)) {
+        	WebElement e = findElement(by);
             clickElement(e, elementName);
         } else {
             logStep("Unable to find Element ["+elementName+"] to Click: ["+by.toString()+"]", "Failed");
@@ -256,16 +261,17 @@ public class ReusableMethods {
     }
     
     public void clickElement(WebElement e, String elementName) {
+    	scrollToElement(e);
         e.click();
         logStep("Clicked Element: ["+elementName+"]", "Passed");
     }
     
     public void selectElement(String selectType, By by, String selectValue, String elementName) {
-        WebElement e = findElement(by);
         if(debug()) {
             logStep("Select Element Locator: ["+by+"]", "Debug");
         }
-        if(e != null) {
+        if(waitShortVisible(by, elementName)) {
+            WebElement e = findElement(by);
             switch(selectType) {
                 case "index":
                     selectElementIndex(e, selectValue, elementName);
@@ -281,12 +287,14 @@ public class ReusableMethods {
     }
     
     public void selectElementText(WebElement e, String selectValue, String elementName) {
+    	scrollToElement(e);
         Select select = new Select(e);
         select.selectByVisibleText(selectValue);
         logStep("Select Element: ["+elementName+"] | Element Selected ["+selectValue+"]", "Passed");
     }
     
     public void selectElementIndex(WebElement e, String index, String elementName) {
+    	scrollToElement(e);
         Select select = new Select(e);
         int idx = Integer.parseInt(index);
         select.selectByIndex(idx);
@@ -294,10 +302,10 @@ public class ReusableMethods {
     }
     
     public void dragAndDrop(By start, By end, String startElementName, String endElementName) {
-        WebElement s = findElement(start);
-        WebElement e = findElement(end);
         
-        if(s.isDisplayed() && e.isDisplayed()) {
+        if(waitShortVisible(start, startElementName) && waitShortVisible(end, endElementName)) {
+        	WebElement s = findElement(start);
+            WebElement e = findElement(end);
             dragAndDrop(s, e, startElementName, endElementName);
         } else {
             logStep("Unable to find Elements [start:"+startElementName+" | end:"+endElementName+"]", "Failed");
@@ -460,7 +468,29 @@ public class ReusableMethods {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
         int itemsFound = driver.findElements(by).size();
         if(debug()) { logStep("#"+itemsFound+" of Elements found for ["+elementName+" | "+by.toString()+"]", "Debug"); }
-        return (itemsFound <= 0);
+        if(itemsFound <= 0) {
+        	return true;
+        } else {
+        	if(debug()) {
+    			logStep("Element ["+elementName+" | "+by.toString()+"] was still visible", "Failed");
+    		}
+        	return false;
+        }
+    }
+    
+    public boolean waitShortDisappear(By by, String elementName) {
+        WebDriverWait wait = new WebDriverWait(driver, Integer.parseInt(config.getProperty("waitTime")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(by));
+        int itemsFound = driver.findElements(by).size();
+        if(debug()) { logStep("#"+itemsFound+" of Elements found for ["+elementName+" | "+by.toString()+"]", "Debug"); }
+        if(itemsFound <= 0) {
+        	return true;
+        } else {
+        	if(debug()) {
+    			logStep("Element ["+elementName+" | "+by.toString()+"] was still visible", "Failed");
+    		}
+        	return false;
+        }
     }
     
     public boolean waitForElementVisible(By by, String elementName) {
@@ -470,13 +500,36 @@ public class ReusableMethods {
 	        int itemsFound = driver.findElements(by).size();
 	        if(debug()) { logStep("#"+itemsFound+" of Elements found for ["+elementName+" | "+by.toString()+"]", "Debug"); }
 	        return (itemsFound > 0);
-    	} catch (Exception e) {e.printStackTrace(); return false;}
+    	} catch (Exception e) {
+    		if(debug()) {
+    			logStep("Element ["+elementName+" | "+by.toString()+"] was not found", "Failed");
+    		}
+    		e.printStackTrace();
+    		return false;
+		}
+    }
+    
+    public boolean waitShortVisible(By by, String elementName) {
+    	try {
+	        WebDriverWait wait = new WebDriverWait(driver, Integer.parseInt(config.getProperty("waitTime")));
+	        wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+	        int itemsFound = driver.findElements(by).size();
+	        if(debug()) { logStep("#"+itemsFound+" of Elements found for ["+elementName+" | "+by.toString()+"]", "Debug"); }
+	        return (itemsFound > 0);
+    	} catch (Exception e) {
+    		if(debug()) {
+    			logStep("Element ["+elementName+" | "+by.toString()+"] was not found", "Failed");
+    		}
+    		e.printStackTrace();
+    		return false;
+		}
     }
     
     public boolean isElementDisplayed(By by, String elementName) {
         try {
             WebElement we = driver.findElement(by);
             if(we != null) {
+            	scrollToElement(we);
                 return true;
             } else {
                 return false;
@@ -493,6 +546,16 @@ public class ReusableMethods {
     	} else {
     		logStep("Element ["+elementName+"] was not found", "Failed");
             return false;
+    	}
+    }
+    
+    public boolean isElementRemovedVerification(By by, String elementName) {
+    	if(isElementDisplayed(by, elementName)) {
+    		logStep("Element ["+elementName+"] was found", "Failed");
+            return false;
+    	} else {
+    		logStep("Element ["+elementName+"] was not found", "Passed");
+            return true;
     	}
     }
     

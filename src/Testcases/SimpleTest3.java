@@ -46,18 +46,18 @@ public class SimpleTest3 extends ReusableMethods{
         
         changeUrl("https://fastest.fish/test-files");
         clickElement(By.xpath("//a[contains(text(), '5MB')]"), "Download 5MB File");
-        try {Thread.sleep(5000);} catch(Exception e) {e.printStackTrace(); }
+        try {Thread.sleep(3000);} catch(Exception e) {e.printStackTrace(); }
         
         changeUrl("https://google.com");
         if(waitForElementVisible(By.xpath("//a[text()='About']"), "About Link")) {
             inputText(By.xpath("//input[@title='Search']"), "google", "Google Search");
             sendEnter(By.xpath("//input[@title='Search']"), "Google Search");    
         }
-        if(!waitForElementVisible(By.xpath("//a[text()='About']"), "About Link")) {
-            System.out.println("About Link is no longer showing");
-        } else {
-            System.out.println("About Link is still visible");
-        }
+//        if(!waitForElementVisible(By.xpath("//a[text()='About']"), "About Link")) {
+//            System.out.println("About Link is no longer showing");
+//        } else {
+//            System.out.println("About Link is still visible");
+//        }
             
         
         // Do what you want here, you are in the new tab
