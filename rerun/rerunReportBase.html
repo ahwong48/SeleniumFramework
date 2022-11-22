@@ -1,0 +1,186 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Google Selenium Report - @timestamp@</title>
+  <meta name="description" content="Google Selenium Report - @SeleniumRun@">
+  <meta name="author" content="ahwong48">
+
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
+
+</head>
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1.5px solid #000000;
+  align-items: start;
+  vertical-align: top;
+  text-align: left;
+  padding: 3px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+div.scrollable {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+
+img {
+  border: 1px solid #ddd; /* Gray border */
+  border-radius: 4px;  /* Rounded border */
+  padding: 2px; /* Some padding */
+  width: 100px; /* Set a small width */
+}
+
+/* Add a hover effect (blue shadow) */
+img:hover {
+  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+  border: 1px solid #ddd; /* Gray border */
+  border-radius: 4px;  /* Rounded border */
+  padding: 2px; /* Some padding */
+  width: 500px; /* Set a small width */
+}
+
+.collapsiblePass {
+  background-color: darkgreen;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.activePass, .collapsiblePass:hover {
+  background-color: darkgreen;
+}
+
+.collapsiblePass:after {
+  content: '\002B';
+  color: white;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.collapsibleFail {
+  background-color: maroon;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.activeFail, .collapsibleFail:hover {
+  background-color: maroon;
+}
+
+.collapsibleFail:after {
+  content: '\002B';
+  color: white;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: scroll;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+}
+</style>
+</head>
+<body>
+
+<h2>Google Selenium Report - @timestamp@</h2>
+
+<table>
+  <tr>
+    <th>Module</th><th>Test Case</th><th>Status</th><th>Final Image Verification</th><th>Time Elapsed</th>
+  </tr>
+  <!--example--> <!--
+  <tr>
+	<td>InputModule</td>
+	<td>InputTestCase</td>
+	<td>
+		<button class="collapsibleFail"><b>Failed:</b> Verify Element Text</button>
+		<div class="content">
+		  <p style="color:DarkGreen;"><b>Click Element</b></p>
+		  <p style="color:OrangeRed;"><b>Debug</b></p>
+		  <p style="color:Maroon;"><b>Verify Element Text</b></p>
+		</div>
+	</td>
+	<td>
+		<a href="./SS/20210371-18.31.23-PASS-null.png">
+			<img src="./SS/20210371-18.31.23-PASS-null.png"/>
+		</a>
+	</td>
+  </tr>
+  <tr>
+	<td>InputModule</td>
+	<td>InputTestCase</td>
+	<td>
+		<button class="collapsiblePass"><b>Failed:</b> Verify Element Text</button>
+		<div class="content">
+		  <p style="color:DarkGreen;"><b>Click Element</b></p>
+		  <p style="color:OrangeRed;"><b>Debug</b></p>
+		  <p style="color:DarkGreen;"><b>Verify Element Text</b></p>
+		</div>
+	</td>
+	<td>
+		<a href="./SS/20210371-18.31.23-PASS-null.png">
+			<img src="./SS/20210371-18.31.23-PASS-null.png"/>
+		</a>
+	</td>
+  </tr>
+  --><!--endExample-->
+  
+  <!--start-->
+  <tr>
+    <td></td>
+    <td>Default test</td>
+    <td>
+        <button class="collapsiblePass"><b>Passed:</b> Clicked Element: [Agency Resources]</button>
+        <div class="content">
+<p><a style="color:DarkGreen;" href="./SS/Default test-20220201-10.52.58-SS-PreDnD.png" target="_blank"><b>Drag and Drop: Before Drag and Drop</b></a></p>
+<p><a style="color:DarkGreen;" href="./SS/Default test-20220201-10.52.59-SS-PostDnD.png" target="_blank"><b>Drag and Drop Element: [start:a|end:b]</b></a></p>
+<p style="color:DarkGreen;"><b>Element: [Element Name: 'true'] Matched with RegEx: [rx_true_yes: '[tT]rue|[yY]es']</b></p>
+<p style="color:DarkGreen;"><b>Mouse Hover Element [Resources and Guide Menu]</b></p>
+<p style="color:DarkGreen;"><b>Clicked Element: [Agency Resources]</b></p>
+        </div>
+    </td>
+    <td>
+        <a href="./SS/Default test-20220201-10.53.12-SS-Default test.png" target="_blank">
+            <img src="./SS/Default test-20220201-10.53.12-SS-Default test.png"/>
+        </a>
+    </td>
+    <td>00:00:19    </td>
+  </tr>
+<!--replace-->
+</suite>
