@@ -9,14 +9,14 @@ public class TestCaseStatus {
 	private String testClass;
 	private long startTime = 0;
 	private long endTime = 0;
-	
+
 	public TestCaseStatus() {
-		tssList = new ArrayList<TestStepStatus>(); 
+		tssList = new ArrayList<TestStepStatus>();
 		testCaseStatus = 0;
 		ssPath = "";
 		startTime = System.nanoTime();
 	}
-	
+
 	public void addTestStepStatus(TestStepStatus tss) {
 		tssList.add(tss);
 		if(tss.getStepStatus().equals("Failed")) {
@@ -26,43 +26,43 @@ public class TestCaseStatus {
 			testCaseStatus=1;
 		}
 	}
-	
+
 	public ArrayList<TestStepStatus> getTestStepList() {
 		return tssList;
 	}
-	
+
 	public boolean passed() {
 		if(testCaseStatus == 1) {
 			return true;
 		} else {
 			return false;
-		} 
+		}
 	}
-	
+
 	public void setSSPath(String path) {
 		ssPath = path;
 	}
-	
+
 	public String getSSPath() {
 		return ssPath;
 	}
-	
+
 	public void putTestClass(String className) {
 		testClass = className;
 	}
-	
+
 	public String getTestClass() {
 		return testClass;
 	}
-	
+
 	public String getLatestFailedStep() {
 		return latestFailedStep;
 	}
-	
+
 	public void endTestCase() {
 		endTime = System.nanoTime();
 	}
-	
+
 	public long getElapsedTime() {
 		return (endTime-startTime);
 	}

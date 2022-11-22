@@ -1,7 +1,6 @@
 package FrameworkBase;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
@@ -25,7 +24,7 @@ public class FrameworkAssert extends Assertion{
     @Override
     public void onAssertFailure(IAssert<?> assertCommand, AssertionError ex) {
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String filepath = "/SS/"+timestamp()+"-FAIL-"+assertCommand.getMessage()+ ".png";
+        String filepath = separatorCompatibility("/SS/"+timestamp()+"-FAIL-"+assertCommand.getMessage()+ ".png");
          try {
              FileUtils.copyFile(scrFile, new File("."+filepath));
              FileUtils.copyFile(scrFile, new File("./test-output"+filepath));
@@ -52,5 +51,9 @@ public class FrameworkAssert extends Assertion{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMDD-HH.mm.ss");    
         Date date = new Date();
         return sdf.format(date);
+    }
+    
+    public String separatorCompatibility(String filepath) {
+        return filepath.replace("/", System.getProperty("file.separator"));
     }
 }
