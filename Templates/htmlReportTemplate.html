@@ -102,7 +102,7 @@ img:hover {
 .content {
   padding: 0 18px;
   max-height: 0;
-  overflow: hidden;
+  overflow: scroll;
   transition: max-height 0.2s ease-out;
   background-color: #f1f1f1;
 }
@@ -181,7 +181,7 @@ img:hover {
 		if (content.style.maxHeight){
 		  content.style.maxHeight = null;
 		} else {
-		  content.style.maxHeight = content.scrollHeight + "px";
+		  content.style.maxHeight = "300px";
 		} 
 	  });
 	}
@@ -196,7 +196,7 @@ img:hover {
 		if (content.style.maxHeight){
 		  content.style.maxHeight = null;
 		} else {
-		  content.style.maxHeight = content.scrollHeight + "px";
+		  content.style.maxHeight = "300px";
 		} 
 	  });
 	}
