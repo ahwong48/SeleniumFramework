@@ -7,30 +7,34 @@ public class PropertyLoader {
 	private Properties prop;
 	public PropertyLoader() {
 		try {
-			File configFile = new File("./config.properties");
+			File configFile = new File(separatorCompatibility("./config.properties"));
 			FileReader reader = new FileReader(configFile);
 			prop = new Properties();
 			prop.load(reader);
 			reader.close();
 		} catch (Exception e) { e.printStackTrace(); }
 	}
-	
+
 	public PropertyLoader(String filename) {
 		try {
-			File configFile = new File(filename);
+			File configFile = new File(separatorCompatibility(filename));
 			FileReader reader = new FileReader(configFile);
 			prop = new Properties();
 			prop.load(reader);
 			reader.close();
 		} catch (Exception e) { e.printStackTrace(); }
 	}
-	
+
 	public String getProperty(String propName) {
 		return prop.getProperty(propName);
 	}
-	
+
 	public String setProperty(String propName, String value) {
 		prop.setProperty(propName, value);
 		return prop.getProperty(propName);
+	}
+
+	public String separatorCompatibility(String filepath) {
+		return filepath.replace("/", System.getProperty("file.separator"));
 	}
 }

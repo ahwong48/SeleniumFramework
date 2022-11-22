@@ -1,7 +1,5 @@
 package FrameworkBase;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
@@ -13,7 +11,7 @@ import java.util.List;
 public class DriverBase {
     private static List<DriverFactory> driverThreadPool = Collections.synchronizedList(new ArrayList<DriverFactory>());
     private static ThreadLocal<DriverFactory> driverThread;
-    private static PropertyLoader config = new PropertyLoader("./config.properties");
+    private static PropertyLoader config = new PropertyLoader(separatorCompatibility("./config.properties"));
     
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
@@ -41,5 +39,9 @@ public class DriverBase {
         for(DriverFactory driverThread : driverThreadPool) {
             driverThread.quitDriver();
         }
+    }
+    
+    public static String separatorCompatibility(String filepath) {
+        return filepath.replace("/", System.getProperty("file.separator"));
     }
 }

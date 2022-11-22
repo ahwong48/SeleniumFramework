@@ -4,30 +4,30 @@ public class TestStepStatus {
 	String testStep;
 	String status;
 	String ssPath = "";
-	
+
 	public TestStepStatus(String testStep, String status) {
 		this.testStep = testStep;
 		this.status = status;
 	}
-	
+
 	public TestStepStatus(String testStep, String status, String ssPath) {
 		this.testStep = testStep;
 		this.status = status;
 		this.ssPath = ssPath;
 	}
-	
+
 	public void addScreenShot(String ssPath) {
 		this.ssPath = ssPath;
 	}
-	
+
 	public String getTestStep() {
 		return testStep;
 	}
-	
+
 	public String getStepStatus() {
 		return status;
 	}
-	
+
 	public String getHTML() {
 		String html = "";
 		if(ssPath.equals("")) {
